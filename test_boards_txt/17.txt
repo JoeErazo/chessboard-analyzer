@@ -1,0 +1,8 @@
+N R _ _ _ _ _ r
+_ _ _ P _ r p k
+_ _ n _ _ P _ p
+p n P _ Q q _ _
+P _ R P b P _ N
+B P _ B _ p K P
+p _ p p _ _ _ p
+b _ _ _ _ _ _ _
