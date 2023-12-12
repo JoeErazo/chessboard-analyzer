@@ -105,10 +105,77 @@ function prewitt(square){
 function isOccupied(square){
     // accept prewitt square
     // add small value to avoid dividing by zero
-    // horizontal pass to find opposing edges
-    // vertical pass to find vertical edges
-    // ratio matching rows / total rows > 0.6
-    // ratio matching cols / total cols > 0.3
+    square.forEach(function(row){
+        row.forEach(function(value){
+            value += 1e-16;
+        });
+    });
+
+    // horizontal pass
+    let filledH = 0;
+    for(let i=0; i<60; i++){
+        let target = 0;
+        let ratio = 0;
+        let stopCount = 0;
+
+        //right->left
+        for(let j=0; j<59; j++){
+            ratio = square[i][j+1]/square[i][j] //right:left pixel
+            if(ratio > 9){
+                target += 1;
+                stopCount = j+1;
+                break;
+            }
+        }
+
+        
+        //left->right
+        ratio = 0;
+        for(let j=0; j<59-stopCount; j++){
+            ratio = square[i][58-j]/square[i][59-j] //left:right pixel
+            if(ratio > 9){
+                target += 1;
+                break;
+            }
+        }
+
+        //match?
+        if(target == 2) filledH += 1;
+    }
+
+    // vertical pass
+    let filledV = 0;
+    for(let i=0; i<60; i++){
+        let target = 0;
+        let ratio = 0;
+        let stopCount = 0;
+
+        //up->down
+        for(let j=0; j<59; j++){
+            ratio = square[j+1][i]/square[j][i] //right:left pixel
+            if(ratio > 9){
+                target += 1;
+                stopCount = j+1;
+                break;
+            }
+        }
+
+        //down->up
+        ratio = 0;
+        for(let j=0; j<59-stopCount; j++){
+            ratio = square[58-j][i]/square[59-j][i] //left:right pixel
+            if(ratio > 9){
+                target += 1;
+                break;
+            }
+        }
+
+        //match?
+        if(target == 2) filledV += 1;
+    }
+
+    //treshold
+    return ((filledH/60) > 0.6) && ((filledV/60) > 0.3);
 }
 
 function flagSquares(squares){
