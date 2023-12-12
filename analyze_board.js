@@ -50,8 +50,8 @@ function getSquares(board){
     return squares;
 }
 
-function prewitt(square){
-    // accept grayscale square
+function prewitt(board){
+    // accept grayscale board
     // initialize prewitt kernels
     hFilter =  [[-1,  0,  1],
                 [-1,  0,  1],
@@ -74,25 +74,25 @@ function prewitt(square){
     for(let i=1; i<639; i++){
         for(let j=1; j<639; j++){
             // apply both filters to each pixel to get magnitude
-            let hValue =(hFilter[0][0]*square[i-1][j-1])+
-                        (hFilter[0][1]*square[i-1][j])+
-                        (hFilter[0][2]*square[i-1][j+1])+
-                        (hFilter[1][0]*square[i][j-1])+
-                        (hFilter[1][1]*square[i][j])+
-                        (hFilter[1][2]*square[i][j+1])+
-                        (hFilter[2][0]*square[i+1][j-1])+
-                        (hFilter[2][1]*square[i+1][j])+
-                        (hFilter[2][2]*square[i+1][j+1]);
+            let hValue =(hFilter[0][0]*board[i-1][j-1])+
+                        (hFilter[0][1]*board[i-1][j])+
+                        (hFilter[0][2]*board[i-1][j+1])+
+                        (hFilter[1][0]*board[i][j-1])+
+                        (hFilter[1][1]*board[i][j])+
+                        (hFilter[1][2]*board[i][j+1])+
+                        (hFilter[2][0]*board[i+1][j-1])+
+                        (hFilter[2][1]*board[i+1][j])+
+                        (hFilter[2][2]*board[i+1][j+1]);
 
-            let vValue =(vFilter[0][0]*square[i-1][j-1])+
-                        (vFilter[0][1]*square[i-1][j])+
-                        (vFilter[0][2]*square[i-1][j+1])+
-                        (vFilter[1][0]*square[i][j-1])+
-                        (vFilter[1][1]*square[i][j])+
-                        (vFilter[1][2]*square[i][j+1])+
-                        (vFilter[2][0]*square[i+1][j-1])+
-                        (vFilter[2][1]*square[i+1][j])+
-                        (vFilter[2][2]*square[i+1][j+1]);
+            let vValue =(vFilter[0][0]*board[i-1][j-1])+
+                        (vFilter[0][1]*board[i-1][j])+
+                        (vFilter[0][2]*board[i-1][j+1])+
+                        (vFilter[1][0]*board[i][j-1])+
+                        (vFilter[1][1]*board[i][j])+
+                        (vFilter[1][2]*board[i][j+1])+
+                        (vFilter[2][0]*board[i+1][j-1])+
+                        (vFilter[2][1]*board[i+1][j])+
+                        (vFilter[2][2]*board[i+1][j+1]);
             
             let magnitude = Math.sqrt(hValue**2 + vValue**2);
             // insert each magnitude to corresponding location in gradient image
@@ -128,7 +128,6 @@ function isOccupied(square){
             }
         }
 
-        
         //left->right
         ratio = 0;
         for(let j=0; j<59-stopCount; j++){
@@ -175,6 +174,7 @@ function isOccupied(square){
     }
 
     //treshold
+    // console.log(filledH, filledV);
     return ((filledH/60) > 0.6) && ((filledV/60) > 0.3);
 }
 
@@ -267,7 +267,7 @@ function draw(){
     var ctx = canvas.getContext('2d');
     ctx.drawImage(this, 0,0);
     scannedImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    console.log(scannedImage["data"]);
+    // console.log(scannedImage["data"]);
 }
 function failed() {
     console.error("Image loading failed.");
