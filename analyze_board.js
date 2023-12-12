@@ -12,6 +12,19 @@ function resizeBoardImage(imgPath){
 function grayscale(board){
     // accept board RGBA array
     // get each grayboard pixel: 0.299 ∙ Red + 0.587 ∙ Green + 0.114 ∙ Blue
+    grayBoard = [];
+    for(let i=0; i<board.length; i++){
+        grayBoardRow = []
+        for(let j=0; j<board.length; j++){
+            let r = board[i][j][0];
+            let g = board[i][j][1];
+            let b = board[i][j][2];
+            grayPixel = 0.299*r + 0.587*g + 0.114*b;
+            grayBoardRow.push(grayPixel);
+        }
+        grayBoard.push(grayBoardRow);
+    }
+    return grayBoard;
 }
 
 function crop(source, value){
@@ -20,7 +33,7 @@ function crop(source, value){
 }
 
 function getSquares(board){
-    // accept grayscale board
+    // accept grayscale or prewitt board
     // get square width and height (total/8)
     // put each square into 8x8 array
 }
@@ -28,10 +41,53 @@ function getSquares(board){
 function prewitt(square){
     // accept grayscale square
     // initialize prewitt kernels
+    hFilter =  [[-1,  0,  1],
+                [-1,  0,  1],
+                [-1,  0,  1]];
+    vFilter =  [[-1, -1, -1],
+                [ 0,  0,  1],
+                [ 1,  1,  1]];
+
     // initialize gradient image (zeroes)
+    gradientImage = [];
+    for(let i=0; i<640; i++){
+        gradientImageRow = [];
+        for(let j=0; j<640; j++){
+            gradientImageRow.push(0);
+        }
+        gradientImage.push(gradientImageRow);
+    }
+
     // iterate over pixels (skip square edge pixels)
-    // apply both filters to each pixel to get magnitude
-    // insert each magnitude to corresponding location in gradient image
+    for(let i=1; i<639; i++){
+        for(let j=1; j<639; j++){
+            // apply both filters to each pixel to get magnitude
+            let hValue =(hFilter[0][0]*square[i-1][j-1])+
+                        (hFilter[0][1]*square[i-1][j])+
+                        (hFilter[0][2]*square[i-1][j+1])+
+                        (hFilter[1][0]*square[i][j-1])+
+                        (hFilter[1][1]*square[i][j])+
+                        (hFilter[1][2]*square[i][j+1])+
+                        (hFilter[2][0]*square[i+1][j-1])+
+                        (hFilter[2][1]*square[i+1][j])+
+                        (hFilter[2][2]*square[i+1][j+1]);
+
+            let vValue =(vFilter[0][0]*square[i-1][j-1])+
+                        (vFilter[0][1]*square[i-1][j])+
+                        (vFilter[0][2]*square[i-1][j+1])+
+                        (vFilter[1][0]*square[i][j-1])+
+                        (vFilter[1][1]*square[i][j])+
+                        (vFilter[1][2]*square[i][j+1])+
+                        (vFilter[2][0]*square[i+1][j-1])+
+                        (vFilter[2][1]*square[i+1][j])+
+                        (vFilter[2][2]*square[i+1][j+1]);
+            
+            let magnitude = Math.sqrt(hValue**2 + vValue**2);
+            // insert each magnitude to corresponding location in gradient image
+            gradientImage[i-1][j-1] = magnitude
+        }
+    }
+    return gradientImage;
 }
 
 function isOccupied(square){
@@ -78,10 +134,17 @@ function identifyPieces(){
     // get board
     board = getRGB(scannedImage["data"]);
     // console.log(board);
-
+    
     // get grayscale board
+    grayBoard = grayscale(board);
+    // console.log(grayBoard);
+
     // get prewitt of grayscale board
+    prewittBoard = prewitt(grayBoard);
+    // console.log(prewittBoard);
+
     // get squares of prewitt and grayscale boards
+
     // flag gray board
     // iterate over squares; determine empty/color/type
 }
