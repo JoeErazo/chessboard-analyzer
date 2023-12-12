@@ -4,11 +4,6 @@
 // x_knn, y_knn
 // avg_prewitts
 
-function resizeBoardImage(imgPath){
-    // accept image file
-    // resize to 640, 640
-}
-
 function grayscale(board){
     // accept board RGBA array
     // get each grayboard pixel: 0.299 ∙ Red + 0.587 ∙ Green + 0.114 ∙ Blue
@@ -34,8 +29,24 @@ function crop(source, value){
 
 function getSquares(board){
     // accept grayscale or prewitt board
-    // get square width and height (total/8)
+    // board size 640x640 -> square size 80x80
+    squares = [];
+
     // put each square into 8x8 array
+    for(let i=0; i<8; i++){
+        squaresRow = [];
+        for(let j=0; j<8; j++){
+            let x1 = i*80
+            let x2 = (i+1)*80
+            let y1 = j*80
+            let y2 = (j+1)*80
+            let square = board.slice(x1, x2).map(i => i.slice(y1, y2));
+            squaresRow.push(square);
+        }
+        squares.push(squaresRow);
+    }
+    
+    return squares;
 }
 
 function prewitt(square){
@@ -144,7 +155,9 @@ function identifyPieces(){
     // console.log(prewittBoard);
 
     // get squares of prewitt and grayscale boards
-
+    graySquares = getSquares(grayBoard);
+    prewittSquares = getSquares(prewittBoard);
+    console.log(graySquares);
     // flag gray board
     // iterate over squares; determine empty/color/type
 }
@@ -161,7 +174,7 @@ document.getElementById("board").onchange = function(e){
 };
 function draw(){
     var canvas = document.getElementById('canvas1');
-    canvas.width = 640;
+    canvas.width = 640; //resize board image
     canvas.height = 640;
     var ctx = canvas.getContext('2d');
     ctx.drawImage(this, 0,0);
