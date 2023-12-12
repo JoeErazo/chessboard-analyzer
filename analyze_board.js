@@ -22,9 +22,10 @@ function grayscale(board){
     return grayBoard;
 }
 
-function crop(source, value){
-    // accept grayscale square
-    // exclude value*total on each side of square
+function crop(source){
+    // accept grayscale or prewitt square
+    // let square = board.slice(x1, x2).map(i => i.slice(y1, y2));
+    return source.slice(10,70).map(i => i.slice(10,70));
 }
 
 function getSquares(board){
@@ -41,7 +42,7 @@ function getSquares(board){
             let y1 = j*80
             let y2 = (j+1)*80
             let square = board.slice(x1, x2).map(i => i.slice(y1, y2));
-            squaresRow.push(square);
+            squaresRow.push(crop(square));
         }
         squares.push(squaresRow);
     }
@@ -157,8 +158,11 @@ function identifyPieces(){
     // get squares of prewitt and grayscale boards
     graySquares = getSquares(grayBoard);
     prewittSquares = getSquares(prewittBoard);
-    console.log(graySquares);
+    // console.log(graySquares);
+
     // flag gray board
+    
+
     // iterate over squares; determine empty/color/type
 }
 
