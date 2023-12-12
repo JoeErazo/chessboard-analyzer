@@ -178,9 +178,22 @@ function isOccupied(square){
     return ((filledH/60) > 0.6) && ((filledV/60) > 0.3);
 }
 
-function flagSquares(squares){
+function flagSquares(prewittSquares){
+    //accept prewittSquares
+    flags = [];
+
     // iterate over squares apply isOccupied
-    // 1: occupied; 0: empty
+    prewittSquares.forEach(function(row){
+        flagsRow = [];
+        row.forEach(function(square){
+            // 1: occupied; 0: empty
+            if(isOccupied(square)) flagsRow.push(1);
+            else flagsRow.push(0);
+        });
+        flags.push(flagsRow);
+    });
+    
+    return flags;
 }
 
 function featureVector(array){
@@ -211,24 +224,28 @@ function getPtypeDataPoint(square){
 
 function identifyPieces(){
     // get board
-    board = getRGB(scannedImage["data"]);
+    let board = getRGB(scannedImage["data"]);
     // console.log(board);
     
     // get grayscale board
-    grayBoard = grayscale(board);
+    let grayBoard = grayscale(board);
     // console.log(grayBoard);
 
     // get prewitt of grayscale board
-    prewittBoard = prewitt(grayBoard);
+    let prewittBoard = prewitt(grayBoard);
     // console.log(prewittBoard);
 
     // get squares of prewitt and grayscale boards
-    graySquares = getSquares(grayBoard);
-    prewittSquares = getSquares(prewittBoard);
-    // console.log(graySquares);
+    let graySquares = getSquares(grayBoard);
+    let prewittSquares = getSquares(prewittBoard);
+    // console.log(prewittSquares);
 
-    // flag gray board
-    
+    // flag prewitt squares
+    let flaggedSquares = flagSquares(prewittSquares);
+    console.log(flaggedSquares);
+
+    let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
+    let result =[];
 
     // iterate over squares; determine empty/color/type
 }
