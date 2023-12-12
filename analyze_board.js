@@ -76,7 +76,9 @@ function getPtypeDataPoint(square){
 
 function identifyPieces(){
     // get board
-    
+    board = getRGB(scannedImage["data"]);
+    // console.log(board);
+
     // get grayscale board
     // get prewitt of grayscale board
     // get squares of prewitt and grayscale boards
@@ -84,28 +86,41 @@ function identifyPieces(){
     // iterate over squares; determine empty/color/type
 }
 
+document.getElementById("btn").addEventListener("click", identifyPieces);
+
 // input
-var btn = document.getElementById("btn");
-btn.addEventListener("click", function(){
-    input = document.getElementById("board");
-    console.log(input.files[0]);
-    img.src = URL.createObjectURL(input.files[0]);
-    context.drawImage(img, 0, 0, canvas.width, canvas.height);
-    const scannedImage = context.getImageData(0, 0, canvas.width, canvas.height);
-    console.log(scannedImage);
-});
+var scannedImage;
+document.getElementById("board").onchange = function(e){
+    var img = new Image();
+    img.onload = draw;
+    img.onerror = failed;
+    img.src = URL.createObjectURL(this.files[0]);
+};
+function draw(){
+    var canvas = document.getElementById('canvas1');
+    canvas.width = 640;
+    canvas.height = 640;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(this, 0,0);
+    scannedImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    console.log(scannedImage["data"]);
+}
+function failed() {
+    console.error("Image loading failed.");
+}
 
-//
-const canvas = document.getElementById("canvas1");
-const context = canvas.getContext('2d');
-canvas.width = 640;
-canvas.height = 640;
-const img = new Image();
-// img.src = "testchessboard.png";
-img.addEventListener("load", function(){
-    context.drawImage(img, 0, 0, canvas.width, canvas.height);
-    const scannedImage = context.getImageData(0, 0, canvas.width, canvas.height);
-});
-
-// TODO:
-// from canvas scannedImage, retrieve rgb array
+function getRGB(scannedImage){
+    var rgb = [];
+    for(let i=0; i<640; i++){
+        let pixelRow = [];
+        for(let j=0; j<640; j++){
+            let pixel = [];
+            for(let k=0; k<3; k++){
+                pixel.push(scannedImage[i*640+j*640+k]);
+            }
+            pixelRow.push(pixel);
+        }
+        rgb.push(pixelRow);
+    }
+    return rgb;
+}
