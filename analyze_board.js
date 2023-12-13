@@ -224,10 +224,10 @@ function euclideanDistance(v1, v2){
 }
 
 class SVM{
-    constructor(weights, bias, learning_rate, reg){
+    constructor(weights, bias, learningRate, reg){
         this.weights = weights;
         this.bias = bias;
-        this.learning_rate = learning_rate;
+        this.learningRate = learningRate;
         this.reg = reg;
     }
 
@@ -236,6 +236,34 @@ class SVM{
         if(approx<0) return -1;
         else return 1;
     }
+}
+
+function argsortFirstN(values, n){
+    if(n>values.length){
+        console.log("argsort Error: n>values.length");
+        return null;
+    }
+
+    highest = [];
+    result = [];
+
+    //initialize n-length highest values and result
+    for(let i=n; i>0; i--){
+        highest.push(values[i]);
+        result.push(i);
+    }
+    
+    //pick highest unshift pop
+    for(let i=0; i<values.length; i++){
+        if(values[i] > highest[0]){
+            highest.unshift(values[i]);
+            highest.pop();
+            result.unshift(i);
+            result.pop();
+        }
+    }
+
+    return result;
 }
 
 class KNN{
@@ -257,8 +285,19 @@ class KNN{
         return predictions;
     }
 
-    _predict(X){
+    _predict(x){
+        //get distances
+        distances = [];
+        this.X_train.forEach(function(x_train){
+            distances.push(euclideanDistance(x, x_train));
+        });
 
+        //get closest k neighbors
+        kIndices = argsortFirstN(distances, this.k);
+        kNearestLabels = [];
+        kIndices.forEach(function(i){
+            kNearestLabels.push(this.y_train[i]);
+        });
     }
 }
 
