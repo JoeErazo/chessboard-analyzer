@@ -237,7 +237,7 @@ class SVM{
     }
 
     predict(X){
-        approx = X[0]*weights[0] +  X[1]*weights[1] - bias;
+        let approx = X[0]*this.weights[0] +  X[1]*this.weights[1] - this.bias;
         if(approx<0) return -1;
         else return 1;
     }
@@ -303,7 +303,7 @@ class KNN{
     }
 
     predict(X){
-        predictions = [];
+        let predictions = [];
         X.forEach(function(x){
             this._predict(x);
         });
@@ -369,7 +369,7 @@ function identifyPieces(){
     let result =[];
 
     // iterate over squares; determine empty/color/type
-    let squareType = True;
+    let squareType = true;
     for(let i=0; i<8; i++){
         let resultRow = [];
         for(let j=0; j<8; j++){
