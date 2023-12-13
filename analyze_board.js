@@ -201,15 +201,39 @@ function flagSquares(prewittSquares){
 }
 
 function featureVector(array){
+    //accept square with size 60x60 pixels
+    fvector = [];
+    for(let i=0; i<60; i++){
+        for(let j=0; j<60; j++){
+            fvector.push(array[i][j]);
+        }
+    }
 
+    return fvector;
 }
 
 function euclideanDistance(v1, v2){
-    
+    squaredDifferences = 0;
+    if(v1.length!=v2.length)
+        console.log(`Distance Error: v1:${v1.length}->v2:${v2.length}`);
+    else{
+        for(let i=0; i<v1.length; i++)
+            squaredDifferences += (v1[i] - v2[i])**2;
+    }
+    return squaredDifferences;
 }
 
 class SVM{
+    constructor(weights, bias, learning_rate, reg){
+        this.weights = weights;
+        this.bias = bias;
+        this.learning_rate = learning_rate;
+        this.reg = reg;
+    }
 
+    predict(X){
+        
+    }
 }
 
 class KNN{
