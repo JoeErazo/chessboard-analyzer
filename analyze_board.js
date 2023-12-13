@@ -276,7 +276,6 @@ function predictPType(x){
     kIndices.forEach(function(i){
         kNearestLabels.push(y_knn[i]);
     });
-    // console.log(kIndices, kNearestLabels);
 
     return mode(kNearestLabels);
 }
@@ -380,31 +379,13 @@ function getRGB(data){
     return rgb;
 }
 
-// export img array for testing; REMOVE LATER
-function save_func(grayBoard){
-    let data_str = "";
-    grayBoard.forEach(function(row){
-        row.forEach(function(pixel){
-            data_str += pixel.toString() + " ";
-        });
-        data_str += "\n";
-    });
-    console.log(data_str);
-}
-
 // data imports
 // d_svm & l_svm attributes
 const d_weights = [2.479467330203778408e-01, -3.011210489511856325e-01];
 const d_bias = -2.087999999999881062e+00;
-// const d_learning_rate = 1.000000000000000021e-03;
-// const d_reg = 1.000000000000000021e-02;
-// const d_svm = new SVM(d_weights, d_bias, d_learning_rate, d_reg);
 
 const l_weights = [4.503044638773179287e-01, -2.817426322562698315e-01];
 const l_bias = 2.590999999999825665e+00;
-// const l_learning_rate = 1.000000000000000021e-03;
-// const l_reg = 1.000000000000000021e-02;
-// const l_svm = new SVM(l_weights, l_bias, l_learning_rate, l_reg);
 
 // avg_imgs
 const avg_img_db = [[0.47213418, 0.47068184, 0.46931959, 0.46879504, 0.46868116,
@@ -3907,8 +3888,6 @@ const y_knn = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. ,0
     4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 5., 5. ,
     5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5. ,
     5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5.];
-// const knn = new KNN(3);
-// knn.fit(x_knn, y_knn);
 
 // avg_prewitts
 const avg_p_p = [[0.02629163, 0.02097726, 0.02753789, 0.01872711, 0.01620715,
