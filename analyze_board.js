@@ -63,7 +63,7 @@ function prewitt(board){
                 [-1,  0,  1],
                 [-1,  0,  1]];
     vFilter =  [[-1, -1, -1],
-                [ 0,  0,  1],
+                [ 0,  0,  0],
                 [ 1,  1,  1]];
 
     // initialize gradient image (zeroes)
@@ -243,28 +243,18 @@ function predictColor(X, squareType){
     else return 1;
 }
 
-function argsortFirstN(values, n){
-    if(n>values.length){
-        console.log("argsort Error: n>values.length");
-        return null;
-    }
+function argsortFirst3(values){
+    let highest = [-9999, -9999, -9999];
+    let result = [-1, -1, -1];
 
-    highest = [];
-    result = [];
-
-    //initialize n-length highest values and result
-    for(let i=n; i>0; i--){
-        highest.push(values[i]);
-        result.push(i);
-    }
-    
-    //pick highest unshift pop
     for(let i=0; i<values.length; i++){
-        if(values[i] > highest[0]){
-            highest.unshift(values[i]);
-            highest.pop();
-            result.unshift(i);
-            result.pop();
+        if(values[i]>highest[0]){
+            highest[2] = highest[1];
+            highest[1] = highest[0];
+            highest[0] = values[i];
+            result[2] = result[1];
+            result[1] = result[0];
+            result[0] = i;
         }
     }
 
@@ -300,12 +290,12 @@ function predictPType(x){
     });
 
     //get closest k neighbors
-    let kIndices = argsortFirstN(distances, 3);
+    let kIndices = argsortFirst3(distances);
     let kNearestLabels = [];
     kIndices.forEach(function(i){
         kNearestLabels.push(y_knn[i]);
     });
-    console.log(kIndices, kNearestLabels);
+
     //majority vote
     return mode(kNearestLabels);
 }
@@ -349,7 +339,7 @@ function identifyPieces(){
     let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
     let result =[];
 
-    console.log(prewittSquares[0][0]);
+    save_func(prewittSquares[0][0]);
 
     // iterate over squares; determine empty/color/type
     let squareType = true;
@@ -363,7 +353,6 @@ function identifyPieces(){
                 else var c = 0;
                 var p = parseInt(predictPType(getPtypeDataPoint(prewittSquares[i][j])));
                 resultRow.push(pieceTypes[c][p]);
-                // console.log(c, p);
             }
             squareType = !squareType;
         }
