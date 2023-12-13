@@ -1,13 +1,3 @@
-/*
-TODO: 
--test mode for whether num is converted to str or vice versa
--test argsort
-*/
-
-// //change value range; training data follows .tiff file pixel range
-// function tiffify(value){
-//     return (((value - 0) * (4.155 - (-0.078))) / (1 - 0)) + -0.078;
-// }
 
 function grayscale(board){
     // accept board RGBA array
@@ -183,7 +173,6 @@ function isOccupied(square){
     }
 
     //treshold
-    // console.log(filledH, filledV);
     return ((filledH/60) > 0.6) && ((filledV/60) > 0.3);
 }
 
@@ -225,7 +214,7 @@ function euclideanDistance(v1, v2){
         for(let i=0; i<v1.length; i++)
             squaredDifferences += (v1[i] - v2[i])**2;
     }
-    return squaredDifferences;
+    return Math.sqrt(squaredDifferences);
 }
 
 function predictColor(X, squareType){
@@ -244,18 +233,12 @@ function predictColor(X, squareType){
 }
 
 function argsortFirst3(values){
-    let highest = [-9999, -9999, -9999];
-    let result = [-1, -1, -1];
+    let result = [];
 
-    for(let i=0; i<values.length; i++){
-        if(values[i]>highest[0]){
-            highest[2] = highest[1];
-            highest[1] = highest[0];
-            highest[0] = values[i];
-            result[2] = result[1];
-            result[1] = result[0];
-            result[0] = i;
-        }
+    for(let i=0; i<3; i++){
+        let minIndex = values.indexOf(Math.min(...values));
+        result.push(minIndex);
+        values.splice(minIndex, 1);
     }
 
     return result;
@@ -283,23 +266,20 @@ function mode(array){
 }
 
 function predictPType(x){
-    //get distances
     let distances = [];
     X_knn.forEach(function(x_knn){
         distances.push(euclideanDistance(x, x_knn));
     });
 
-    //get closest k neighbors
     let kIndices = argsortFirst3(distances);
-    let kNearestLabels = [];
+    kNearestLabels = [];
     kIndices.forEach(function(i){
         kNearestLabels.push(y_knn[i]);
     });
+    // console.log(kIndices, kNearestLabels);
 
-    //majority vote
     return mode(kNearestLabels);
 }
-
 
 function getColorDataPoint(square, squareType){
     // discern dark or light square
@@ -338,8 +318,6 @@ function identifyPieces(){
     let flaggedSquares = flagSquares(prewittSquares);
     let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
     let result =[];
-
-    save_func(prewittSquares[0][0]);
 
     // iterate over squares; determine empty/color/type
     let squareType = true;
@@ -380,7 +358,6 @@ function draw(){
     var ctx = canvas.getContext('2d');
     ctx.drawImage(this, 0,0);
     scannedImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    // console.log(scannedImage["data"]);
 }
 
 function failed() {
