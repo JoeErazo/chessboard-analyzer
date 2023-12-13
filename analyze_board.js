@@ -359,35 +359,35 @@ function getPtypeDataPoint(square){
 }
 
 function identifyPieces(){
-    // get board
-    // console.log(scannedImage["data"]);
     let board = getRGB(scannedImage["data"]);
-    // console.log(board);
-    
-    // get grayscale board
     let grayBoard = grayscale(board);
-    // console.log(grayBoard);
-    // save_func(grayBoard);
-
-    // get prewitt of grayscale board
     let prewittBoard = prewitt(grayBoard);
-    // console.log(prewittBoard);
-    // save_func(prewittBoard);
-
-    // get squares of prewitt and grayscale boards
     let graySquares = getSquares(grayBoard);
     let prewittSquares = getSquares(prewittBoard);
-    // console.log(prewittSquares);
-    // save_func(prewittSquares[0][0]);
-
-    // flag prewitt squares
     let flaggedSquares = flagSquares(prewittSquares);
-    console.log(flaggedSquares);
-
     let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
     let result =[];
 
     // iterate over squares; determine empty/color/type
+    let squareType = True;
+    for(let i=0; i<8; i++){
+        let resultRow = [];
+        for(let j=0; j<8; j++){
+            if(squareType) var svm = l_svm;
+            else var svm = d_svm;
+            if(flaggedSquares[i][j] == 0) resultRow.push("_");
+            else{
+                sign = svm.predict(getColorDataPoint(graySquares[i][j], squareType));
+                if(sign>0) var c = 1;
+                else var c = 0;
+                p = parseInt(knn.predict(getPtypeDataPoint(prewittSquares[i][j])));
+                resultRow.push(pieceTypes[c][p]);
+            }
+        }
+        result.push(resultRow);
+    }
+
+    console.log(result);
 }
 
 document.getElementById("btn").addEventListener("click", identifyPieces);
@@ -400,6 +400,7 @@ document.getElementById("board").onchange = function(e){
     img.onerror = failed;
     img.src = URL.createObjectURL(this.files[0]);
 };
+
 function draw(){
     var canvas = document.getElementById('canvas1');
     canvas.width = 640; //resize board image
@@ -409,6 +410,7 @@ function draw(){
     scannedImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
     // console.log(scannedImage["data"]);
 }
+
 function failed() {
     console.error("Image loading failed.");
 }
@@ -429,7 +431,7 @@ function getRGB(data){
     return rgb;
 }
 
-// export img array for testing
+// export img array for testing; REMOVE LATER
 function save_func(grayBoard){
     let data_str = "";
     grayBoard.forEach(function(row){
