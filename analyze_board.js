@@ -321,7 +321,7 @@ class KNN{
         });
 
         //majority vote
-        
+        return mode(kNearestLabels);
     }
 }
 
