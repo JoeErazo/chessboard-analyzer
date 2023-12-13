@@ -1,8 +1,8 @@
-// data imports
-// d_svm & l_svm attributes
-// avg_imgs
-// x_knn, y_knn
-// avg_prewitts
+
+//change value range; training data follows .tiff file pixel range
+function tiffify(value){
+    return (((value - 0) * (4.155 - (-0.078))) / (1 - 0)) + -0.078;
+}
 
 function grayscale(board){
     // accept board RGBA array
@@ -309,6 +309,9 @@ function save_func(grayBoard){
     console.log(data_str);
 }
 
-function tiffify(value){
-    return (((value - 0) * (4.155 - (-0.078))) / (1 - 0)) + -0.078;
-}
+// data imports
+// d_svm & l_svm attributes
+
+// avg_imgs
+// x_knn, y_knn
+// avg_prewitts
