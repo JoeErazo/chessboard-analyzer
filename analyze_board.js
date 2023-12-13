@@ -1,3 +1,8 @@
+/*
+TODO: 
+-test mode for whether num is converted to str or vice versa
+-test argsort
+*/
 
 //change value range; training data follows .tiff file pixel range
 function tiffify(value){
@@ -328,11 +333,29 @@ class KNN{
 function getColorDataPoint(square, squareType){
     // discern dark or light square
     // get euclidean distance to white and black avg
+    if(squareType){
+        var x = euclideanDistance(featureVector(square), featureVector(avg_img_lb));
+        var y = euclideanDistance(featureVector(square), featureVector(avg_img_lw));
+    }
+    else{
+        var x = euclideanDistance(featureVector(square), featureVector(avg_img_db));
+        var y = euclideanDistance(featureVector(square), featureVector(avg_img_dw));
+    }
+    
+    return [x, y];
 }
 
 function getPtypeDataPoint(square){
     // get euclidean distances for each avg_prewitt
     // return distances [p, r, n, b, k, q]
+    p = euclideanDistance(featureVector(square), featureVector(avg_p_p));
+    r = euclideanDistance(featureVector(square), featureVector(avg_p_r));
+    n = euclideanDistance(featureVector(square), featureVector(avg_p_n));
+    b = euclideanDistance(featureVector(square), featureVector(avg_p_b));
+    k = euclideanDistance(featureVector(square), featureVector(avg_p_k));
+    q = euclideanDistance(featureVector(square), featureVector(avg_p_q));
+
+    return [p, r, n, b, k, q];
 }
 
 function identifyPieces(){
@@ -3933,6 +3956,8 @@ const y_knn = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. ,0
     4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 5., 5. ,
     5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5. ,
     5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5.];
+const knn = new KNN(3);
+knn.fit(x_knn, y_knn);
 
 // avg_prewitts
 const avg_p_p = [[0.02629163, 0.02097726, 0.02753789, 0.01872711, 0.01620715,
