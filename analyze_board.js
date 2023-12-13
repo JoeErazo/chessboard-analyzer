@@ -4,10 +4,10 @@ TODO:
 -test argsort
 */
 
-//change value range; training data follows .tiff file pixel range
-function tiffify(value){
-    return (((value - 0) * (4.155 - (-0.078))) / (1 - 0)) + -0.078;
-}
+// //change value range; training data follows .tiff file pixel range
+// function tiffify(value){
+//     return (((value - 0) * (4.155 - (-0.078))) / (1 - 0)) + -0.078;
+// }
 
 function grayscale(board){
     // accept board RGBA array
@@ -20,7 +20,7 @@ function grayscale(board){
             let g = board[i][j][1];
             let b = board[i][j][2];
             grayPixel = 0.299*r + 0.587*g + 0.114*b;
-            grayBoardRow.push(tiffify(grayPixel));
+            grayBoardRow.push(grayPixel);
         }
         grayBoard.push(grayBoardRow);
     }
@@ -228,19 +228,19 @@ function euclideanDistance(v1, v2){
     return squaredDifferences;
 }
 
-class SVM{
-    constructor(weights, bias, learningRate, reg){
-        this.weights = weights;
-        this.bias = bias;
-        this.learningRate = learningRate;
-        this.reg = reg;
+function predictColor(X, squareType){
+    if(squareType){
+        var weights = l_weights;
+        var bias = l_bias;
+    }
+    else{
+        var weights = d_weights;
+        var bias = d_bias;
     }
 
-    predict(X){
-        let approx = X[0]*this.weights[0] +  X[1]*this.weights[1] - this.bias;
-        if(approx<0) return -1;
-        else return 1;
-    }
+    let approx = X[0]*weights[0] +  X[1]*weights[1] - bias;
+    if(approx<0) return -1;
+    else return 1;
 }
 
 function argsortFirstN(values, n){
@@ -292,43 +292,24 @@ function mode(array){
     return maxEl;
 }
 
-class KNN{
-    constructor(k){
-        this.k = k;
-    }
+function predictPType(x){
+    //get distances
+    let distances = [];
+    X_knn.forEach(function(x_knn){
+        distances.push(euclideanDistance(x, x_knn));
+    });
 
-    fit(X, y){
-        this.X_train = X;
-        this.y_train = y;
-    }
-
-    predict(X){
-        let predictions = [];
-        X.forEach(function(x){
-            predictions.push(this._predict(x));
-        });
-        
-        return predictions;
-    }
-    
-    _predict(x){
-        //get distances
-        distances = [];
-        this.X_train.forEach(function(x_train){
-            distances.push(euclideanDistance(x, x_train));
-        });
-
-        //get closest k neighbors
-        kIndices = argsortFirstN(distances, this.k);
-        kNearestLabels = [];
-        kIndices.forEach(function(i){
-            kNearestLabels.push(this.y_train[i]);
-        });
-
-        //majority vote
-        return mode(kNearestLabels);
-    }
+    //get closest k neighbors
+    let kIndices = argsortFirstN(distances, 3);
+    let kNearestLabels = [];
+    kIndices.forEach(function(i){
+        kNearestLabels.push(y_knn[i]);
+    });
+    console.log(kIndices, kNearestLabels);
+    //majority vote
+    return mode(kNearestLabels);
 }
+
 
 function getColorDataPoint(square, squareType){
     // discern dark or light square
@@ -368,21 +349,23 @@ function identifyPieces(){
     let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
     let result =[];
 
+    console.log(prewittSquares[0][0]);
+
     // iterate over squares; determine empty/color/type
     let squareType = true;
     for(let i=0; i<8; i++){
         let resultRow = [];
         for(let j=0; j<8; j++){
-            if(squareType) var svm = l_svm;
-            else var svm = d_svm;
             if(flaggedSquares[i][j] == 0) resultRow.push("_");
             else{
-                sign = svm.predict(getColorDataPoint(graySquares[i][j], squareType));
+                sign = predictColor(getColorDataPoint(graySquares[i][j], squareType));
                 if(sign>0) var c = 1;
                 else var c = 0;
-                p = parseInt(knn.predict(getPtypeDataPoint(prewittSquares[i][j])));
+                var p = parseInt(predictPType(getPtypeDataPoint(prewittSquares[i][j])));
                 resultRow.push(pieceTypes[c][p]);
+                // console.log(c, p);
             }
+            squareType = !squareType;
         }
         result.push(resultRow);
     }
@@ -447,15 +430,15 @@ function save_func(grayBoard){
 // d_svm & l_svm attributes
 const d_weights = [2.479467330203778408e-01, -3.011210489511856325e-01];
 const d_bias = -2.087999999999881062e+00;
-const d_learning_rate = 1.000000000000000021e-03;
-const d_reg = 1.000000000000000021e-02;
-const d_svm = new SVM(d_weights, d_bias, d_learning_rate, d_reg);
+// const d_learning_rate = 1.000000000000000021e-03;
+// const d_reg = 1.000000000000000021e-02;
+// const d_svm = new SVM(d_weights, d_bias, d_learning_rate, d_reg);
 
 const l_weights = [4.503044638773179287e-01, -2.817426322562698315e-01];
 const l_bias = 2.590999999999825665e+00;
-const l_learning_rate = 1.000000000000000021e-03;
-const l_reg = 1.000000000000000021e-02;
-const l_svm = new SVM(l_weights, l_bias, l_learning_rate, l_reg);
+// const l_learning_rate = 1.000000000000000021e-03;
+// const l_reg = 1.000000000000000021e-02;
+// const l_svm = new SVM(l_weights, l_bias, l_learning_rate, l_reg);
 
 // avg_imgs
 const avg_img_db = [[0.47213418, 0.47068184, 0.46931959, 0.46879504, 0.46868116,
@@ -3340,7 +3323,7 @@ const avg_img_lw = [[0.79432137, 0.78931541, 0.78209936, 0.79103693, 0.79680294,
     0.60533418, 0.64090568, 0.67316989, 0.70241272, 0.72481496]];
 
 // x_knn, y_knn
-const x_knn = [[22.04090103, 27.9313415 , 28.21472124, 22.78103457, 30.42024368,
+const X_knn = [[22.04090103, 27.9313415 , 28.21472124, 22.78103457, 30.42024368,
     29.74229583],
    [16.63094289, 27.97833737, 25.52663597, 26.33838265, 33.82103939,
     31.81992474],
@@ -3958,8 +3941,8 @@ const y_knn = [0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0. ,0
     4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 4., 5., 5. ,
     5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5. ,
     5., 5., 5., 5., 5., 5., 5., 5., 5., 5., 5.];
-const knn = new KNN(3);
-knn.fit(x_knn, y_knn);
+// const knn = new KNN(3);
+// knn.fit(x_knn, y_knn);
 
 // avg_prewitts
 const avg_p_p = [[0.02629163, 0.02097726, 0.02753789, 0.01872711, 0.01620715,
