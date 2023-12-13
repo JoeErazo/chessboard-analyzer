@@ -305,12 +305,12 @@ class KNN{
     predict(X){
         let predictions = [];
         X.forEach(function(x){
-            this._predict(x);
+            predictions.push(this._predict(x));
         });
         
         return predictions;
     }
-
+    
     _predict(x){
         //get distances
         distances = [];
