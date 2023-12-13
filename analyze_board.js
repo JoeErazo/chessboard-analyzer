@@ -420,7 +420,20 @@ function save_func(grayBoard){
 
 // data imports
 // d_svm & l_svm attributes
+const d_weights = [2.479467330203778408e-01, -3.011210489511856325e-01];
+const d_bias = -2.087999999999881062e+00;
+const d_learning_rate = 1.000000000000000021e-03;
+const d_reg = 1.000000000000000021e-02;
+const d_svm = new SVM(d_weights, d_bias, d_learning_rate, d_reg);
+
+const l_weights = [4.503044638773179287e-01, -2.817426322562698315e-01];
+const l_bias = 2.590999999999825665e+00;
+const l_learning_rate = 1.000000000000000021e-03;
+const l_reg = 1.000000000000000021e-02;
+const l_svm = new SVM(l_weights, l_bias, l_learning_rate, l_reg);
 
 // avg_imgs
+
 // x_knn, y_knn
+
 // avg_prewitts
