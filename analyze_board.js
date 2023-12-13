@@ -232,7 +232,9 @@ class SVM{
     }
 
     predict(X){
-        
+        approx = X[0]*weights[0] +  X[1]*weights[1] - bias;
+        if(approx<0) return -1;
+        else return 1;
     }
 }
 
