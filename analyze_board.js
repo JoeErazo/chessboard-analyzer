@@ -15,10 +15,11 @@ function grayscale(board){
             let g = board[i][j][1];
             let b = board[i][j][2];
             grayPixel = 0.299*r + 0.587*g + 0.114*b;
-            grayBoardRow.push(grayPixel);
+            grayBoardRow.push(tiffify(grayPixel));
         }
         grayBoard.push(grayBoardRow);
     }
+
     return grayBoard;
 }
 
@@ -111,17 +112,20 @@ function isOccupied(square){
         });
     });
 
+    var ratioCheck = 1.5;
+
     // horizontal pass
     let filledH = 0;
     for(let i=0; i<60; i++){
         let target = 0;
         let ratio = 0;
         let stopCount = 0;
+        
 
         //right->left
         for(let j=0; j<59; j++){
             ratio = square[i][j+1]/square[i][j] //right:left pixel
-            if(ratio > 9){
+            if(ratio > ratioCheck){
                 target += 1;
                 stopCount = j+1;
                 break;
@@ -132,7 +136,7 @@ function isOccupied(square){
         ratio = 0;
         for(let j=0; j<59-stopCount; j++){
             ratio = square[i][58-j]/square[i][59-j] //left:right pixel
-            if(ratio > 9){
+            if(ratio > ratioCheck){
                 target += 1;
                 break;
             }
@@ -152,7 +156,7 @@ function isOccupied(square){
         //up->down
         for(let j=0; j<59; j++){
             ratio = square[j+1][i]/square[j][i] //right:left pixel
-            if(ratio > 9){
+            if(ratio > ratioCheck){
                 target += 1;
                 stopCount = j+1;
                 break;
@@ -163,7 +167,7 @@ function isOccupied(square){
         ratio = 0;
         for(let j=0; j<59-stopCount; j++){
             ratio = square[58-j][i]/square[59-j][i] //left:right pixel
-            if(ratio > 9){
+            if(ratio > ratioCheck){
                 target += 1;
                 break;
             }
@@ -226,12 +230,12 @@ function identifyPieces(){
     // get board
     // console.log(scannedImage["data"]);
     let board = getRGB(scannedImage["data"]);
-    console.log(board);
+    // console.log(board);
     
     // get grayscale board
     let grayBoard = grayscale(board);
     // console.log(grayBoard);
-    save_func(grayBoard);
+    // save_func(grayBoard);
 
     // get prewitt of grayscale board
     let prewittBoard = prewitt(grayBoard);
@@ -242,10 +246,11 @@ function identifyPieces(){
     let graySquares = getSquares(grayBoard);
     let prewittSquares = getSquares(prewittBoard);
     // console.log(prewittSquares);
+    // save_func(prewittSquares[0][0]);
 
     // flag prewitt squares
     let flaggedSquares = flagSquares(prewittSquares);
-    // console.log(flaggedSquares);
+    console.log(flaggedSquares);
 
     let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
     let result =[];
@@ -302,4 +307,8 @@ function save_func(grayBoard){
         data_str += "\n";
     });
     console.log(data_str);
+}
+
+function tiffify(value){
+    return (((value - 0) * (4.155 - (-0.078))) / (1 - 0)) + -0.078;
 }
