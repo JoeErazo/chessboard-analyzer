@@ -8,9 +8,9 @@ function grayscale(board){
     // accept board RGBA array
     // get each grayboard pixel: 0.299 ∙ Red + 0.587 ∙ Green + 0.114 ∙ Blue
     grayBoard = [];
-    for(let i=0; i<board.length; i++){
+    for(let i=0; i<640; i++){
         grayBoardRow = []
-        for(let j=0; j<board.length; j++){
+        for(let j=0; j<640; j++){
             let r = board[i][j][0];
             let g = board[i][j][1];
             let b = board[i][j][2];
@@ -224,16 +224,19 @@ function getPtypeDataPoint(square){
 
 function identifyPieces(){
     // get board
+    // console.log(scannedImage["data"]);
     let board = getRGB(scannedImage["data"]);
-    // console.log(board);
+    console.log(board);
     
     // get grayscale board
     let grayBoard = grayscale(board);
     // console.log(grayBoard);
+    save_func(grayBoard);
 
     // get prewitt of grayscale board
     let prewittBoard = prewitt(grayBoard);
     // console.log(prewittBoard);
+    // save_func(prewittBoard);
 
     // get squares of prewitt and grayscale boards
     let graySquares = getSquares(grayBoard);
@@ -242,7 +245,7 @@ function identifyPieces(){
 
     // flag prewitt squares
     let flaggedSquares = flagSquares(prewittSquares);
-    console.log(flaggedSquares);
+    // console.log(flaggedSquares);
 
     let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
     let result =[];
@@ -273,18 +276,30 @@ function failed() {
     console.error("Image loading failed.");
 }
 
-function getRGB(scannedImage){
-    var rgb = [];
-    for(let i=0; i<640; i++){
-        let pixelRow = [];
-        for(let j=0; j<640; j++){
-            let pixel = [];
-            for(let k=0; k<3; k++){
-                pixel.push(scannedImage[i*640+j*640+k]);
-            }
-            pixelRow.push(pixel);
-        }
-        rgb.push(pixelRow);
+function getRGB(data){
+    var rgbFlat = [];
+    var rgb = []
+
+    //turn into flat rgb
+    for(let i=0; i<640*640*4; i+=4){
+        rgbFlat.push([data[i]/255, data[i+1]/255, data[i+2]/255]);
     }
+    //turn into 2D
+    for(let i=0; i<640; i++){
+        rgb.push(rgbFlat.slice(640*i, 640*(i+1)));
+    }
+
     return rgb;
+}
+
+// export img array for testing
+function save_func(grayBoard){
+    let data_str = "";
+    grayBoard.forEach(function(row){
+        row.forEach(function(pixel){
+            data_str += pixel.toString() + " ";
+        });
+        data_str += "\n";
+    });
+    console.log(data_str);
 }
