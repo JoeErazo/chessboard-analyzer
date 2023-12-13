@@ -239,7 +239,27 @@ class SVM{
 }
 
 class KNN{
+    constructor(k){
+        this.k = k;
+    }
 
+    fit(X, y){
+        this.X_train = X;
+        this.y_train = y;
+    }
+
+    predict(X){
+        predictions = [];
+        X.forEach(function(x){
+            this._predict(x);
+        });
+        
+        return predictions;
+    }
+
+    _predict(X){
+
+    }
 }
 
 function getColorDataPoint(square, squareType){
