@@ -315,31 +315,43 @@ function identifyPieces(){
     let graySquares = getSquares(grayBoard);
     let prewittSquares = getSquares(prewittBoard);
     let flaggedSquares = flagSquares(prewittSquares);
-    let pieceTypes = [["p", "r", "n", "b", "k", "q"], ["P", "R", "N", "B", "K", "Q"]];
-    let result =[];
+    let pieceTypes = ["pawn", "rook", "knight", "bishop", "king", "queen"];
+    let pieceValues = [1, 4, 2, 3, 6, 5]; // piece values: p1 r4 n2 b3 k6 q5
+    let result = [];
 
+    
     // iterate over squares; determine empty/color/type
     let squareType = true;
     for(let i=0; i<8; i++){
         let resultRow = [];
         for(let j=0; j<8; j++){
-            if(flaggedSquares[i][j] == 0) resultRow.push("_");
+            let pieceObj = {};
+            if(flaggedSquares[i][j] == 0){
+                pieceObj.color = null;
+                pieceObj.piece = null;
+                pieceObj.value = -100;
+            }
             else{
                 sign = predictColor(getColorDataPoint(graySquares[i][j], squareType));
-                if(sign>0) var c = 1;
-                else var c = 0;
-                var p = parseInt(predictPType(getPtypeDataPoint(prewittSquares[i][j])));
-                resultRow.push(pieceTypes[c][p]);
+                if(sign>0) pieceObj.color = 1;
+                else pieceObj.color = 0;
+                let p = parseInt(predictPType(getPtypeDataPoint(prewittSquares[i][j])));
+                pieceObj.piece = pieceTypes[p];
+                pieceObj.value = pieceValues[p];
             }
+            resultRow.push(pieceObj);
             squareType = !squareType;
         }
         result.push(resultRow);
     }
-
-    console.log(result);
+    
+    imageRecogOutput = result;
 }
 
 document.getElementById("btn").addEventListener("click", identifyPieces);
+
+// output
+var imageRecogOutput;
 
 // input
 var scannedImage;
