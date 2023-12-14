@@ -107,7 +107,7 @@ function isOccupied(square){
         });
     });
 
-    var ratioCheck = 1.5;
+    var ratioCheck = 9;
 
     // horizontal pass
     let filledH = 0;
