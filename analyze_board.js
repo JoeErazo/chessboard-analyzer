@@ -107,7 +107,7 @@ function isOccupied(square){
         });
     });
 
-    var ratioCheck = 9;
+    var ratioCheck = 4;
 
     // horizontal pass
     let filledH = 0;
@@ -118,7 +118,7 @@ function isOccupied(square){
         
 
         //right->left
-        for(let j=0; j<29; j++){
+        for(let j=0; j<30; j++){
             ratio = square[i][j+1]/square[i][j] //right:left pixel
             if(ratio > ratioCheck){
                 target += 1;
@@ -129,7 +129,7 @@ function isOccupied(square){
 
         //left->right
         ratio = 0;
-        for(let j=0; j<29; j++){
+        for(let j=0; j<30; j++){
             ratio = square[i][58-j]/square[i][59-j] //left:right pixel
             if(ratio > ratioCheck){
                 target += 1;
@@ -148,7 +148,7 @@ function isOccupied(square){
         let ratio = 0;
 
         //up->down
-        for(let j=0; j<29; j++){
+        for(let j=0; j<30; j++){
             ratio = square[j+1][i]/square[j][i] //right:left pixel
             if(ratio > ratioCheck){
                 target += 1;
@@ -158,7 +158,7 @@ function isOccupied(square){
 
         //down->up
         ratio = 0;
-        for(let j=0; j<29; j++){
+        for(let j=0; j<30; j++){
             ratio = square[58-j][i]/square[59-j][i] //left:right pixel
             if(ratio > ratioCheck){
                 target += 1;
@@ -171,7 +171,7 @@ function isOccupied(square){
     }
 
     //treshold
-    return ((filledH/60) > 0.6) && ((filledV/60) > 0.3);
+    return ((filledH/60) > 0.7) && ((filledV/60) > 0.3);
 }
 
 function flagSquares(prewittSquares){
@@ -343,6 +343,7 @@ function identifyPieces(){
         result.push(resultRow);
     }
     
+    console.log(result);
     imageRecogOutput = result;
 }
 
