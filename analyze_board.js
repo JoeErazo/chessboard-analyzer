@@ -171,7 +171,7 @@ function isOccupied(square){
     }
 
     //treshold
-    return ((filledH/60) > 0.7) && ((filledV/60) > 0.3);
+    return ((filledH/60) > 0.6) && ((filledV/60) > 0.3);
 }
 
 function flagSquares(prewittSquares){
