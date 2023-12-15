@@ -343,7 +343,6 @@ function identifyPieces(){
         result.push(resultRow);
     }
     
-    console.log(result);
     imageRecogOutput = result;
 }
 
