@@ -118,7 +118,7 @@ function isOccupied(square){
         
 
         //right->left
-        for(let j=0; j<59; j++){
+        for(let j=0; j<29; j++){
             ratio = square[i][j+1]/square[i][j] //right:left pixel
             if(ratio > ratioCheck){
                 target += 1;
@@ -129,7 +129,7 @@ function isOccupied(square){
 
         //left->right
         ratio = 0;
-        for(let j=0; j<59-stopCount; j++){
+        for(let j=0; j<29; j++){
             ratio = square[i][58-j]/square[i][59-j] //left:right pixel
             if(ratio > ratioCheck){
                 target += 1;
@@ -146,21 +146,19 @@ function isOccupied(square){
     for(let i=0; i<60; i++){
         let target = 0;
         let ratio = 0;
-        let stopCount = 0;
 
         //up->down
-        for(let j=0; j<59; j++){
+        for(let j=0; j<29; j++){
             ratio = square[j+1][i]/square[j][i] //right:left pixel
             if(ratio > ratioCheck){
                 target += 1;
-                stopCount = j+1;
                 break;
             }
         }
 
         //down->up
         ratio = 0;
-        for(let j=0; j<59-stopCount; j++){
+        for(let j=0; j<29; j++){
             ratio = square[58-j][i]/square[59-j][i] //left:right pixel
             if(ratio > ratioCheck){
                 target += 1;
@@ -345,6 +343,7 @@ function identifyPieces(){
         result.push(resultRow);
     }
     
+    console.log(result);
     imageRecogOutput = result;
 }
 
